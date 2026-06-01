@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Members\Tables;
 
 use App\Models\Member;
+use App\Services\Wallet\WalletService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -193,6 +194,15 @@ class MemberTable
                             ->modalSubmitAction(false)
                             ->modalCancelActionLabel('Close')
                             ->modalContent(fn (Member $record) => view('filament.member-qr', ['member' => $record])),
+                        Action::make('wallet_card')
+                            ->label('Wallet card')
+                            ->icon('heroicon-o-wallet')
+                            ->color('gray')
+                            ->visible(fn (): bool => app(WalletService::class)->appleEnabled() || app(WalletService::class)->googleEnabled())
+                            ->modalHeading(fn (Member $record): string => $record->name.' — wallet card')
+                            ->modalSubmitAction(false)
+                            ->modalCancelActionLabel('Close')
+                            ->modalContent(fn (Member $record) => view('filament.member-wallet', ['member' => $record])),
                         ViewAction::make(),
                         EditAction::make()->hiddenLabel(),
                         DeleteAction::make()->hiddenLabel(),

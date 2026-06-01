@@ -4,7 +4,7 @@
         {{-- Live occupancy --}}
         <div class="rounded-xl bg-white dark:bg-gray-900 ring-1 ring-gray-950/5 dark:ring-white/10 p-6 flex items-center justify-between">
             <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">In the gym now</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.access.kiosk.occupancy') }}</p>
                 <p class="text-4xl font-bold text-gray-950 dark:text-white">
                     {{ $this->occupancy }}<span class="text-lg font-normal text-gray-400"> / {{ $this->capacity > 0 ? $this->capacity : '∞' }}</span>
                 </p>
@@ -15,14 +15,14 @@
         {{-- Scan / enter --}}
         <form wire:submit="submit" class="rounded-xl bg-white dark:bg-gray-900 ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
             <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                Scan member QR or enter code / email
+                {{ __('app.access.kiosk.scan_label') }}
             </label>
             <div class="flex gap-3">
                 <input id="code" type="text" wire:model="code" autofocus autocomplete="off"
                     class="flex-1 rounded-lg border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="e.g. 0001" />
+                    placeholder="{{ __('app.access.kiosk.placeholder') }}" />
                 <x-filament::button type="submit" icon="heroicon-m-arrow-right-circle">
-                    Check in / out
+                    {{ __('app.access.kiosk.check_in_out') }}
                 </x-filament::button>
             </div>
         </form>
@@ -50,7 +50,7 @@
                         );
                     } catch (e) {
                         this.scanning = false;
-                        this.error = 'Could not start the camera. Allow camera access, or use manual entry above.';
+                        this.error = @js(__('app.access.kiosk.camera_error'));
                     }
                 },
                 onScan(text) {
@@ -80,11 +80,11 @@
         >
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200">Camera scan</p>
-                    <p class="text-xs text-gray-500">Point the camera at the member's QR code.</p>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('app.access.kiosk.camera_scan') }}</p>
+                    <p class="text-xs text-gray-500">{{ __('app.access.kiosk.camera_hint') }}</p>
                 </div>
                 <x-filament::button color="primary" icon="heroicon-m-camera" x-on:click="toggle()">
-                    <span x-text="scanning ? 'Stop camera' : 'Scan with camera'"></span>
+                    <span x-text="scanning ? @js(__('app.access.kiosk.stop_camera')) : @js(__('app.access.kiosk.scan_with_camera'))"></span>
                 </x-filament::button>
             </div>
             <p x-show="error" x-text="error" style="display:none" class="text-sm text-rose-600 mt-3"></p>
@@ -106,23 +106,23 @@
 
         {{-- Currently checked in --}}
         <div class="rounded-xl bg-white dark:bg-gray-900 ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-            <p class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-4">Currently checked in</p>
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-4">{{ __('app.access.kiosk.currently_in') }}</p>
             <div class="divide-y divide-gray-100 dark:divide-gray-800">
                 @forelse ($this->currentlyIn as $attendance)
                     <div class="flex items-center justify-between py-3">
                         <div>
                             <p class="font-medium text-gray-950 dark:text-white">{{ $attendance->member?->name ?? '—' }}</p>
                             <p class="text-xs text-gray-500">
-                                #{{ $attendance->member?->code }} · in since {{ $attendance->checked_in_at?->format('H:i') }}
+                                #{{ $attendance->member?->code }} · {{ __('app.access.kiosk.in_since', ['time' => $attendance->checked_in_at?->format('H:i')]) }}
                             </p>
                         </div>
                         <x-filament::button size="sm" color="gray"
                             wire:click="quick('{{ $attendance->member?->code }}')">
-                            Check out
+                            {{ __('app.access.kiosk.check_out') }}
                         </x-filament::button>
                     </div>
                 @empty
-                    <p class="text-sm text-gray-400 py-3">Nobody in the gym right now.</p>
+                    <p class="text-sm text-gray-400 py-3">{{ __('app.access.kiosk.nobody') }}</p>
                 @endforelse
             </div>
         </div>

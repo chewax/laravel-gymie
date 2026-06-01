@@ -18,17 +18,17 @@ class AttendanceResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'Attendance log';
+        return __('app.access.attendance.nav');
     }
 
     public static function getModelLabel(): string
     {
-        return 'Attendance';
+        return __('app.access.attendance.singular');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Attendance';
+        return __('app.access.attendance.singular');
     }
 
     public static function canCreate(): bool
@@ -42,33 +42,34 @@ class AttendanceResource extends Resource
             ->defaultSort('checked_in_at', 'desc')
             ->columns([
                 TextColumn::make('member.name')
-                    ->label('Member')
+                    ->label(__('app.access.attendance.member'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('member.code')
-                    ->label('Code')
+                    ->label(__('app.access.attendance.code'))
                     ->searchable(),
                 TextColumn::make('checked_in_at')
-                    ->label('Check-in')
+                    ->label(__('app.access.attendance.check_in'))
                     ->dateTime('d M Y H:i')
                     ->sortable(),
                 TextColumn::make('checked_out_at')
-                    ->label('Check-out')
+                    ->label(__('app.access.attendance.check_out'))
                     ->dateTime('d M Y H:i')
-                    ->placeholder('— still in —'),
+                    ->placeholder(__('app.access.attendance.still_in')),
                 TextColumn::make('method')
+                    ->label(__('app.access.attendance.method'))
                     ->badge(),
                 TextColumn::make('recorder.name')
-                    ->label('By')
+                    ->label(__('app.access.attendance.by'))
                     ->placeholder('—')
                     ->toggleable(),
             ])
             ->filters([
                 Filter::make('today')
-                    ->label('Today only')
+                    ->label(__('app.access.attendance.today_only'))
                     ->query(fn (Builder $query): Builder => $query->whereDate('checked_in_at', today())),
                 Filter::make('in_gym')
-                    ->label('Currently in')
+                    ->label(__('app.access.attendance.currently_in'))
                     ->query(fn (Builder $query): Builder => $query->whereNull('checked_out_at')),
             ]);
     }

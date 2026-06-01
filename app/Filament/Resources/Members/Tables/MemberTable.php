@@ -187,21 +187,21 @@ class MemberTable
                             ->disabled()
                             ->color('gray'),
                         Action::make('checkin_qr')
-                            ->label('Check-in QR')
+                            ->label(__('app.access.qr.action'))
                             ->icon('heroicon-o-qr-code')
                             ->color('info')
                             ->modalHeading(fn (Member $record): string => $record->name)
                             ->modalSubmitAction(false)
-                            ->modalCancelActionLabel('Close')
+                            ->modalCancelActionLabel(__('app.common.close'))
                             ->modalContent(fn (Member $record) => view('filament.member-qr', ['member' => $record])),
                         Action::make('wallet_card')
-                            ->label('Wallet card')
+                            ->label(__('app.wallet.action'))
                             ->icon('heroicon-o-wallet')
                             ->color('gray')
                             ->visible(fn (): bool => app(WalletService::class)->appleEnabled() || app(WalletService::class)->googleEnabled())
-                            ->modalHeading(fn (Member $record): string => $record->name.' — wallet card')
+                            ->modalHeading(fn (Member $record): string => $record->name.' — '.__('app.wallet.action'))
                             ->modalSubmitAction(false)
-                            ->modalCancelActionLabel('Close')
+                            ->modalCancelActionLabel(__('app.common.close'))
                             ->modalContent(fn (Member $record) => view('filament.member-wallet', ['member' => $record])),
                         ViewAction::make(),
                         EditAction::make()->hiddenLabel(),

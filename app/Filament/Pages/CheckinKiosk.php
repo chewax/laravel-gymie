@@ -21,12 +21,12 @@ class CheckinKiosk extends Page
 
     public static function getNavigationLabel(): string
     {
-        return 'Check-in kiosk';
+        return __('app.access.kiosk.nav');
     }
 
     public function getTitle(): string
     {
-        return 'Check-in';
+        return __('app.access.kiosk.title');
     }
 
     /** Manual entry / keyboard-wedge scanner (form submit). */

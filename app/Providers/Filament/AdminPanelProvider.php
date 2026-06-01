@@ -157,7 +157,7 @@ class AdminPanelProvider extends PanelProvider
                     ->items($memberships)
                     ->collapsed(false),
 
-                NavigationGroup::make('Access')
+                NavigationGroup::make(__('app.access.group'))
                     ->icon('heroicon-o-lock-closed')
                     ->items($access)
                     ->collapsed(false),

@@ -71,7 +71,7 @@ class CheckinService
         $member = $this->resolveMember($credential);
 
         if (! $member) {
-            return $this->deny('No member matches "'.trim($credential).'".');
+            return $this->deny(__('app.access.result.no_member', ['credential' => trim($credential)]));
         }
 
         // An open visit today means this scan is a check-OUT.
@@ -85,25 +85,25 @@ class CheckinService
             return [
                 'ok' => true,
                 'type' => 'checkout',
-                'title' => 'Goodbye, '.$member->name,
-                'detail' => 'Checked out at '.now()->format('H:i').'.',
+                'title' => __('app.access.result.goodbye', ['name' => $member->name]),
+                'detail' => __('app.access.result.checked_out_at', ['time' => now()->format('H:i')]),
                 'member' => $member,
             ];
         }
 
         $status = $member->status instanceof \BackedEnum ? $member->status->value : $member->status;
         if ($status === 'inactive') {
-            return $this->deny('Membership is inactive.', $member);
+            return $this->deny(__('app.access.result.inactive'), $member);
         }
 
         $subscription = $this->activeSubscription($member);
         if (! $subscription) {
-            return $this->deny('No active subscription.', $member);
+            return $this->deny(__('app.access.result.no_subscription'), $member);
         }
 
         $capacity = $this->capacity();
         if ($capacity > 0 && $this->occupancy() >= $capacity) {
-            return $this->deny('Gym is at capacity ('.$capacity.').', $member);
+            return $this->deny(__('app.access.result.at_capacity', ['capacity' => $capacity]), $member);
         }
 
         Attendance::create([
@@ -117,8 +117,8 @@ class CheckinService
         return [
             'ok' => true,
             'type' => 'checkin',
-            'title' => 'Welcome, '.$member->name,
-            'detail' => 'Membership valid until '.optional($subscription->end_date)->format('d M Y').'.',
+            'title' => __('app.access.result.welcome', ['name' => $member->name]),
+            'detail' => __('app.access.result.valid_until', ['date' => optional($subscription->end_date)->format('d M Y')]),
             'member' => $member,
         ];
     }
@@ -128,7 +128,7 @@ class CheckinService
         return [
             'ok' => false,
             'type' => 'deny',
-            'title' => 'Access denied',
+            'title' => __('app.access.result.denied'),
             'detail' => $detail,
             'member' => $member,
         ];

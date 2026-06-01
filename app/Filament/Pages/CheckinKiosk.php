@@ -29,9 +29,27 @@ class CheckinKiosk extends Page
         return 'Check-in';
     }
 
+    /** Manual entry / keyboard-wedge scanner (form submit). */
     public function submit(): void
     {
-        $result = app(CheckinService::class)->handle($this->code, 'manual', auth()->id());
+        $this->process($this->code, 'manual');
+    }
+
+    /** Decoded value from the device-camera QR scanner. */
+    public function scan(string $code): void
+    {
+        $this->process($code, 'qr');
+    }
+
+    /** Re-run for a given code (used by the "Check out" buttons). */
+    public function quick(string $code): void
+    {
+        $this->process($code, 'manual');
+    }
+
+    private function process(string $code, string $method): void
+    {
+        $result = app(CheckinService::class)->handle($code, $method, auth()->id());
 
         $this->result = [
             'ok' => $result['ok'],
@@ -41,13 +59,6 @@ class CheckinKiosk extends Page
         ];
 
         $this->code = '';
-    }
-
-    /** Re-run a scan for a given code (used by the "Check out" buttons). */
-    public function quick(string $code): void
-    {
-        $this->code = $code;
-        $this->submit();
     }
 
     public function getCurrentlyInProperty()

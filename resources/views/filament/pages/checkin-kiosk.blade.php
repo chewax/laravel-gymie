@@ -27,6 +27,70 @@
             </div>
         </form>
 
+        {{-- Camera QR scanner (loads html5-qrcode on demand) --}}
+        <div
+            x-data="{
+                scanning: false,
+                reader: null,
+                error: null,
+                handled: false,
+                async toggle() { this.scanning ? await this.stop() : await this.start(); },
+                async start() {
+                    this.error = null;
+                    this.handled = false;
+                    try {
+                        if (! window.Html5Qrcode) { await this.load(); }
+                        this.reader = new window.Html5Qrcode('qr-reader');
+                        this.scanning = true;
+                        await this.reader.start(
+                            { facingMode: 'environment' },
+                            { fps: 10, qrbox: { width: 240, height: 240 } },
+                            (text) => this.onScan(text),
+                            () => {}
+                        );
+                    } catch (e) {
+                        this.scanning = false;
+                        this.error = 'Could not start the camera. Allow camera access, or use manual entry above.';
+                    }
+                },
+                onScan(text) {
+                    if (this.handled) { return; }
+                    this.handled = true;
+                    this.stop();
+                    @this.scan(text);
+                },
+                async stop() {
+                    if (this.reader && this.scanning) {
+                        this.scanning = false;
+                        try { await this.reader.stop(); this.reader.clear(); } catch (e) {}
+                    }
+                },
+                load() {
+                    return new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = 'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
+                        s.onload = resolve;
+                        s.onerror = () => reject(new Error('load failed'));
+                        document.head.appendChild(s);
+                    });
+                }
+            }"
+            x-on:livewire:navigating.window="stop()"
+            class="rounded-xl bg-white dark:bg-gray-900 ring-1 ring-gray-950/5 dark:ring-white/10 p-6"
+        >
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200">Camera scan</p>
+                    <p class="text-xs text-gray-500">Point the camera at the member's QR code.</p>
+                </div>
+                <x-filament::button color="primary" icon="heroicon-m-camera" x-on:click="toggle()">
+                    <span x-text="scanning ? 'Stop camera' : 'Scan with camera'"></span>
+                </x-filament::button>
+            </div>
+            <p x-show="error" x-text="error" style="display:none" class="text-sm text-rose-600 mt-3"></p>
+            <div id="qr-reader" x-show="scanning" style="display:none" class="mt-4 max-w-sm mx-auto overflow-hidden rounded-lg"></div>
+        </div>
+
         {{-- Result banner --}}
         @if ($result)
             <div @class([

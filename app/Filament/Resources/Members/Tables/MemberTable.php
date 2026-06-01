@@ -185,6 +185,14 @@ class MemberTable
                             ->label(__('app.actions.record_actions'))
                             ->disabled()
                             ->color('gray'),
+                        Action::make('checkin_qr')
+                            ->label('Check-in QR')
+                            ->icon('heroicon-o-qr-code')
+                            ->color('info')
+                            ->modalHeading(fn (Member $record): string => $record->name)
+                            ->modalSubmitAction(false)
+                            ->modalCancelActionLabel('Close')
+                            ->modalContent(fn (Member $record) => view('filament.member-qr', ['member' => $record])),
                         ViewAction::make(),
                         EditAction::make()->hiddenLabel(),
                         DeleteAction::make()->hiddenLabel(),

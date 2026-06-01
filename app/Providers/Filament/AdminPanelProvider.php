@@ -2,8 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\CheckinKiosk;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\Settings;
+use App\Filament\Resources\Attendances\AttendanceResource;
 use App\Filament\Resources\Enquiries\EnquiryResource;
 use App\Filament\Resources\Expenses\ExpenseResource;
 use App\Filament\Resources\FollowUps\FollowUpResource;
@@ -138,6 +140,11 @@ class AdminPanelProvider extends PanelProvider
             ...SubscriptionResource::getNavigationItems(),
         ];
 
+        $access = [
+            ...CheckinKiosk::getNavigationItems(),
+            ...AttendanceResource::getNavigationItems(),
+        ];
+
         return $builder
             ->groups([
                 NavigationGroup::make(__('app.navigation.groups.sales'))
@@ -148,6 +155,11 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make(__('app.navigation.groups.memberships'))
                     ->icon('heroicon-o-user-group')
                     ->items($memberships)
+                    ->collapsed(false),
+
+                NavigationGroup::make('Access')
+                    ->icon('heroicon-o-lock-closed')
+                    ->items($access)
                     ->collapsed(false),
 
                 NavigationGroup::make(__('app.navigation.groups.billing'))

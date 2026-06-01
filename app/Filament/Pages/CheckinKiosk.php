@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use App\Services\CheckinService;
-use BackedEnum;
 use Filament\Pages\Page;
 
 /**
@@ -19,11 +18,6 @@ class CheckinKiosk extends Page
 
     /** @var array<string, mixed>|null */
     public ?array $result = null;
-
-    public static function getNavigationIcon(): string|BackedEnum|null
-    {
-        return 'heroicon-o-qr-code';
-    }
 
     public static function getNavigationLabel(): string
     {

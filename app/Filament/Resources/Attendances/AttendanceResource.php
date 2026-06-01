@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Attendances;
 
 use App\Filament\Resources\Attendances\Pages\ListAttendances;
 use App\Models\Attendance;
-use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -16,11 +15,6 @@ class AttendanceResource extends Resource
     protected static ?string $model = Attendance::class;
 
     protected static ?string $recordTitleAttribute = 'id';
-
-    public static function getNavigationIcon(): string|BackedEnum|null
-    {
-        return 'heroicon-o-clipboard-document-list';
-    }
 
     public static function getNavigationLabel(): string
     {

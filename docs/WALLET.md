@@ -4,9 +4,15 @@ Members can be issued a digital membership card carrying their **member `code`
 as a QR barcode** — the same credential the check-in kiosk validates. Cards are
 **static** (issued once); re-issue if a membership renews.
 
-In the admin panel: **Members → row menu → "Wallet card"** shows "Add to Apple
-Wallet" / "Add to Google Wallet" buttons. The button only appears for a wallet
-that is enabled and configured below.
+In the admin panel: **Members → row menu → "Wallet card"** shows an **enrollment
+QR** (and a shareable link). The member scans it once with their phone camera →
+a public landing page (`/wallet/card/{token}`) detects their phone and offers
+"Add to Apple Wallet" (iPhone) or "Add to Google Wallet" (Android). The token is
+random and unguessable, so no login is required. The action only appears once a
+wallet is enabled below.
+
+Note: the enrollment QR encodes a URL to *get* the card; the wallet card's own
+barcode (and the separate check-in QR) encodes the member `code` the kiosk reads.
 
 All credential files live under `storage/app/wallet/` (git-ignored).
 

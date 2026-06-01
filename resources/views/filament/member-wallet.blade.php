@@ -1,29 +1,22 @@
-@php($wallet = app(\App\Services\Wallet\WalletService::class))
+@php($url = route('wallet.card', $member->wallet_token))
 <div class="flex flex-col items-center gap-4 py-4">
     <p class="text-sm text-gray-500 dark:text-gray-400 text-center max-w-xs">
-        Issue a digital membership card. The card carries the member's QR code
-        ({{ $member->code }}), so it works at the check-in kiosk.
+        Have the member scan this with their phone camera to add their membership
+        card to Apple&nbsp;Wallet or Google&nbsp;Wallet. They only scan once.
     </p>
 
-    <div class="flex flex-col gap-3 w-full max-w-xs">
-        @if ($wallet->appleEnabled())
-            <a href="{{ route('wallet.apple', $member) }}"
-               class="flex items-center justify-center gap-2 rounded-lg bg-black text-white px-4 py-3 font-medium hover:opacity-90">
-                <x-filament::icon icon="heroicon-m-device-phone-mobile" class="h-5 w-5" />
-                Add to Apple Wallet
-            </a>
-        @endif
-
-        @if ($wallet->googleEnabled())
-            <a href="{{ route('wallet.google', $member) }}" target="_blank" rel="noopener"
-               class="flex items-center justify-center gap-2 rounded-lg bg-[#4285F4] text-white px-4 py-3 font-medium hover:opacity-90">
-                <x-filament::icon icon="heroicon-m-wallet" class="h-5 w-5" />
-                Add to Google Wallet
-            </a>
-        @endif
+    <div class="bg-white p-4 rounded-lg ring-1 ring-gray-200">
+        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(220)->margin(1)->generate($url) !!}
     </div>
 
+    <a href="{{ $url }}" target="_blank" rel="noopener"
+       class="text-xs text-primary-600 dark:text-primary-400 underline break-all text-center max-w-xs">
+        {{ $url }}
+    </a>
+
     <p class="text-xs text-gray-400 text-center max-w-xs">
-        Tip: open this on the member's phone (or email them the link) so they can add the card directly.
+        Or send this link to the member directly. The page detects their phone and
+        shows the right wallet. (This is the enrollment QR — different from the
+        check-in QR the kiosk reads.)
     </p>
 </div>

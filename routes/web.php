@@ -12,11 +12,16 @@ Route::middleware([Authenticate::class])
 
         Route::get('/invoices/{invoice}/download', [InvoiceDocumentController::class, 'download'])
             ->name('invoices.download');
-
-        // Wallet membership cards (Apple .pkpass download / Google save link)
-        Route::get('/wallet/apple/{member}', [WalletController::class, 'apple'])
-            ->name('wallet.apple');
-
-        Route::get('/wallet/google/{member}', [WalletController::class, 'google'])
-            ->name('wallet.google');
     });
+
+// Public, token-based wallet enrollment (member scans their personal QR).
+Route::middleware('throttle:60,1')->group(function (): void {
+    Route::get('/wallet/card/{token}', [WalletController::class, 'landing'])
+        ->name('wallet.card');
+
+    Route::get('/wallet/card/{token}/apple', [WalletController::class, 'apple'])
+        ->name('wallet.card.apple');
+
+    Route::get('/wallet/card/{token}/google', [WalletController::class, 'google'])
+        ->name('wallet.card.google');
+});

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -97,6 +98,11 @@ class Member extends Model
                 $member->code = Helpers::generateLastNumber('member', Member::class, null, 'code');
             }
             Helpers::updateLastNumber('member', $member->code);
+
+            // Unguessable token for the public "get your wallet card" link.
+            if (! $member->wallet_token) {
+                $member->wallet_token = Str::random(40);
+            }
         });
     }
 
